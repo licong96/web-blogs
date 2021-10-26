@@ -1,5 +1,7 @@
+const querystring = require('querystring');
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
+const { getPostData } = require('./src/utils')
 
 const serverHandle = (req, res) => {
 	res.setHeader('Content-Type', 'application/json')
@@ -9,32 +11,40 @@ const serverHandle = (req, res) => {
 	// 	site: 'site',
 	// 	env: process.env.NODE_ENV
 	// }
-
+	// 获取path
 	const url = req.url
 	req.path = url.split('?')[0]
 
-	// 博客路由
-	const blogData = handleBlogRouter(req, res)
-	if (blogData) {
-		res.end(
-			JSON.stringify(blogData)
-		)
-		return
-	}
+	// 解析query
+	req.query = querystring.parse(url.split('?')[1]);
 
-	// 登录路由
-	const userData = handleUserRouter(req, res)
-	if (userData) {
-		res.end(
-			JSON.stringify(userData)
-		)
-		return
-	}
+	// 解析post data
+	getPostData(req).then(postData => {
+		req.body = postData
 
-	// 404的情况
-	res.writeHead(404, {'Content-Type': 'text/plain'})
-	res.write('404 Not Found\n')
-	res.end()
+		// 博客路由
+		const blogData = handleBlogRouter(req, res)
+		if (blogData) {
+			res.end(
+				JSON.stringify(blogData)
+			)
+			return
+		}
+
+		// 登录路由
+		const userData = handleUserRouter(req, res)
+		if (userData) {
+			res.end(
+				JSON.stringify(userData)
+			)
+			return
+		}
+
+		// 404的情况
+		res.writeHead(404, {'Content-Type': 'text/plain'})
+		res.write('404 Not Found\n')
+		res.end()
+	})
 }
 
 module.exports = serverHandle
