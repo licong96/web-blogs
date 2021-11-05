@@ -15,7 +15,6 @@ function exec(sql) {
 				reject(err)
 				return
 			}
-			console.log('sql:', result)
 			resolve(result)
 		})
 	})
