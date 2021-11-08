@@ -1,21 +1,24 @@
-const redis = require('redis')
+const fs = require('fs')
+const path = require('path')
+const fileName = path.resolve(__dirname, 'test.txt')
 
-// 创建客户端
-const redisClient = redis.createClient(6379, '127.0.0.1')
-
-redisClient.on('error', err => {
-	console.error(err)
-})
-
-// 测试
-redisClient.set('name', 'licong', redis.print)
-
-redisClient.get('name', (err, val) => {
+// 读取文件内容
+fs.readFile(fileName, (err, data) => {
 	if (err) {
-		console.error(err)
+		console.log(err)
 		return
 	}
-	console.log(val)
-	// 退出
-	redisClient.quit()
+	// data 是二进制类型，需要转为字符串
+	console.log(data.toString())
+})
+
+// 写入文件
+const content = '\n这是新写入的内容'
+const opt = {
+	flag: 'a'	// a: 追加写入，w: 覆盖写入
+}
+fs.writeFile(fileName, content, opt, (err) => {
+	if (err) {
+		console.log(err)
+	}
 })
