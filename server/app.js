@@ -1,11 +1,15 @@
 const queryString = require('query-string')
 const cookie = require('cookie');
+const { access } = require('./src/utils/log')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 const { getPostData, getCookieExpires } = require('./src/utils')
 const redis = require('./src/db/redis')
 
 const serverHandle = (req, res) => {
+	// 记录 access log
+	access(`${req.method} -- ${req.url} -- ${req.headers['user-agent']} -- ${new Date().toString()}`)
+
 	res.setHeader('Content-Type', 'application/json')
 
 	// 获取path
