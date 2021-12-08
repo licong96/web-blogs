@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=dev nodemon ./bin/www.js",
-    "prd": "cross-env NODE_ENV=production nodemon ./bin/www.js"
+    "prd": "cross-env NODE_ENV=production pm2 start ./bin/www.js",
+    "sh": "./sh/copy.sh",
+    "start": "pm2 start ecosystem.config.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +19,7 @@
   "dependencies": {
     "cookie": "^0.4.1",
     "mysql": "^2.18.1",
+    "pm2": "^5.1.2",
     "query-string": "^7.0.1",
     "redis": "^3.1.2"
   }
